@@ -1,36 +1,33 @@
-from collections import defaultdict
-import numpy as np
+def nQueens(n):
+    valid_boards = []
+    def find_valid_boards(row, cols, diags, anti_diags):
+        if row == n:
+            # e.g. when adding a queen in column index 1, add 1 ".", then 1 "Q", then (n-2) "."s
+            valid_boards.append(["."*c + "Q" + "."*(n-c-1) for c in cols])
+            return 
+        for col in range(n):
+            diag = row-col
+            anti_diag = row+col
+            if col not in cols and diag not in diags and anti_diag not in anti_diags:
+                find_valid_boards(row+1, cols + [col], diags + [diag], anti_diags + [anti_diag])
+    find_valid_boards(0, [], [], [])
+    return valid_boards
 
-valid = []
-
-def validateBoard(n, queens):
-    for (i, j) in queens:
-        for k in range(i+1, n):
-            if (k, j) in queens:
-                return False
-        for k in range(j+1, n):
-            if (i, k) in queens:
-                return False
-        for k in range(i+1, n):
-            for m in range(j+1, n):
-                if (k, m) in queens:
-                    return False
-    return True
-
-def rec(n, queens, i):
-    if n == 0: return
-    rec(n, queens, i+1)
-    rec(n-1, queens + [i], i+1)
-
-# def nQueens(n):
-    # for z in range(n*n):
-    #     board = [[0]*n]*n
-    #     queens = n
-    #     for i in range(n):
-    #         for i in range(n):
+def runtest(n, expected):
+    actual = nQueens(n)
+    if expected == actual:
+        print(str(n) + ":" + "success")
+    else:
+        print(str(n) + ":" + "fail")
+        print("expected:", expected)
+        print("actual:", actual)
 
 def main():
-    print(validateBoard(2, [(0,0), (1,1)]))
+    runtest(1, [["Q"]])
+    runtest(2, [])
+    runtest(3, [])
+    runtest(4, [[".Q..","...Q","Q...","..Q."],["..Q.","Q...","...Q",".Q.."]])
+    runtest(5, [["Q....","..Q..","....Q",".Q...","...Q."],["Q....","...Q.",".Q...","....Q","..Q.."],[".Q...","...Q.","Q....","..Q..","....Q"],[".Q...","....Q","..Q..","Q....","...Q."],["..Q..","Q....","...Q.",".Q...","....Q"],["..Q..","....Q",".Q...","...Q.","Q...."],["...Q.","Q....","..Q..","....Q",".Q..."],["...Q.",".Q...","....Q","..Q..","Q...."],["....Q",".Q...","...Q.","Q....","..Q.."],["....Q","..Q..","Q....","...Q.",".Q..."]])
 
 if __name__ == '__main__':
     main()
